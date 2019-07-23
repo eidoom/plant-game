@@ -1,7 +1,7 @@
 import pyglet
 
 WIDTH = 1280
-HEIGHT = 800
+HEIGHT = 600
 UPS = 60
 
 pyglet.resource.path = ['.']
@@ -16,7 +16,7 @@ class GameWindow(pyglet.window.Window):
         super().__init__(*args, **kwargs)
         self.leaf_cost_atp = 3
         self.leaf_cost_water = 3
-        self.root_cost = 2
+        self.root_cost_atp = 2
 
         self.growth_speed = 0
         self.water_speed = 0
@@ -68,15 +68,28 @@ class GameWindow(pyglet.window.Window):
         game.clear()
         self.game_batch.draw()
 
-    def on_key_press(self, symbol, modifiers):
-        if all([symbol is pyglet.window.key.L, self.atp > self.leaf_cost_atp, self.water > self.leaf_cost_water]):
-            self.atp -= self.leaf_cost_atp
-            self.water -= self.leaf_cost_water
-            self.leaves += 1
-            self.plant.scale += 0.1
+    def set_atp_white(self, time):
+        self.atp_text.color = (255, 255, 255, 255)
 
-        if symbol is pyglet.window.key.R and self.atp > self.root_cost:
-            self.atp -= self.root_cost
+    def set_water_white(self, time):
+        self.water_text.color = (255, 255, 255, 255)
+
+    def on_key_press(self, symbol, modifiers):
+        if symbol is pyglet.window.key.L:
+            if all([self.atp >= self.leaf_cost_atp, self.water >= self.leaf_cost_water]):
+                self.atp -= self.leaf_cost_atp
+                self.water -= self.leaf_cost_water
+                self.leaves += 1
+                self.plant.scale += 0.1
+            if self.atp < self.leaf_cost_atp:
+                self.atp_text.color = (242, 38, 19, 255)
+                pyglet.clock.schedule_once(self.set_atp_white, .5)
+            if self.water < self.leaf_cost_water:
+                self.water_text.color = (242, 38, 19, 255)
+                pyglet.clock.schedule_once(self.set_water_white, .5)
+
+        if symbol is pyglet.window.key.R and self.atp > self.root_cost_atp:
+            self.atp -= self.root_cost_atp
             self.roots += 1
 
 
