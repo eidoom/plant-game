@@ -88,9 +88,14 @@ class GameWindow(pyglet.window.Window):
                 self.water_text.color = (242, 38, 19, 255)
                 pyglet.clock.schedule_once(self.set_water_white, .5)
 
-        if symbol is pyglet.window.key.R and self.atp > self.root_cost_atp:
-            self.atp -= self.root_cost_atp
-            self.roots += 1
+        if symbol is pyglet.window.key.R:
+            if self.atp >= self.root_cost_atp:
+                self.atp -= self.root_cost_atp
+                self.roots += 1
+            else:
+                self.atp_text.color = (242, 38, 19, 255)
+                pyglet.clock.schedule_once(self.set_atp_white, .5)
+
 
 
 game = GameWindow(width=WIDTH, height=HEIGHT)
