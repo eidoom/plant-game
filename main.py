@@ -27,12 +27,14 @@ class GameWindow(pyglet.window.Window):
         self.leaves = 1
         self.roots = 1
 
+        self.clock = 0
+
         self.game_batch = pyglet.graphics.Batch()
         self.background = pyglet.graphics.OrderedGroup(0)
         self.foreground = pyglet.graphics.OrderedGroup(1)
 
         self.row_1_height = self.height / 2
-        self.row_1_length = 5
+        self.row_1_length = 6
         self.atp_text = pyglet.text.Label(text="", batch=self.game_batch, x=self.width * 1 / self.row_1_length,
                                           y=self.row_1_height, group=self.foreground)
         self.leaves_text = pyglet.text.Label(text="", batch=self.game_batch, x=self.width * 2 / self.row_1_length,
@@ -41,7 +43,8 @@ class GameWindow(pyglet.window.Window):
                                             y=self.row_1_height, group=self.foreground)
         self.water_text = pyglet.text.Label(text="", batch=self.game_batch, x=self.width * 4 / self.row_1_length,
                                             y=self.row_1_height, group=self.foreground)
-
+        self.clock_text = pyglet.text.Label(text="", batch=self.game_batch, x=self.width * 5 / self.row_1_length,
+                                            y=self.row_1_height, group=self.foreground)
         self.plant = pyglet.sprite.Sprite(img=plant_image, x=self.width / 2, y=0, batch=self.game_batch,
                                           group=self.background)
         self.plant.scale = 0.1
@@ -55,14 +58,17 @@ class GameWindow(pyglet.window.Window):
     def set_leaves(self):
         self.leaves_text.text = f"Leaves: {self.leaves}"
 
+    def set_roots(self):
+        self.roots_text.text = f"Roots: {self.roots}"
+
+    def set_clock(self):
+        self.clock_text.text = f"Clock: {int(self.clock)}"
+
     def set_growth_speed(self):
         self.growth_speed = self.leaves
 
     def set_water_speed(self):
         self.water_speed = self.roots
-
-    def set_roots(self):
-        self.roots_text.text = f"Roots: {self.roots}"
 
     def on_draw(self):
         game.clear()
@@ -108,9 +114,11 @@ def update(dt):
     game.set_water()
     game.set_leaves()
     game.set_roots()
+    game.set_clock()
 
     game.atp += game.growth_speed / UPS
     game.water += game.water_speed / UPS
+    game.clock += 1. / UPS
 
 
 if __name__ == "__main__":
