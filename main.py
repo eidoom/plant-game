@@ -4,8 +4,6 @@ WIDTH = 1280
 HEIGHT = 600
 UPS = 60
 
-game_speed = 20
-
 pyglet.resource.path = ['.']
 pyglet.resource.reindex()
 
@@ -16,6 +14,8 @@ plant_image.anchor_x = plant_image.width / 2
 class GameWindow(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.game_speed = 10
+
         self.leaf_cost_atp = 3
         self.leaf_cost_water = 3
         self.root_cost_atp = 2
@@ -29,7 +29,7 @@ class GameWindow(pyglet.window.Window):
         self.leaves = 1
         self.roots = 1
 
-        self.time = 0
+        self.time = 0  # total minutes
 
         self.game_batch = pyglet.graphics.Batch()
         self.background = pyglet.graphics.OrderedGroup(0)
@@ -46,7 +46,7 @@ class GameWindow(pyglet.window.Window):
         self.water_text = pyglet.text.Label(text="", batch=self.game_batch, x=self.width * 4 / self.row_1_length,
                                             y=self.row_1_height, group=self.foreground)
         self.time_text = pyglet.text.Label(text="", batch=self.game_batch, x=self.width * 5 / self.row_1_length,
-                                            y=self.row_1_height, group=self.foreground)
+                                           y=self.row_1_height, group=self.foreground)
         self.plant = pyglet.sprite.Sprite(img=plant_image, x=self.width / 2, y=0, batch=self.game_batch,
                                           group=self.background)
         self.plant.scale = 0.1
@@ -63,8 +63,23 @@ class GameWindow(pyglet.window.Window):
     def set_roots(self):
         self.roots_text.text = f"Roots: {self.roots}"
 
+    def get_day(self):
+        return self.time / (60 * 24)
+
+    def get_hour(self):
+        return (self.time % (60 * 24)) / 60
+
+    def get_minute(self):
+        return self.time % 60
+
+    @staticmethod
+    def format_time(time_quantity):
+        the_time = int(time_quantity)
+        return the_time if the_time > 9 else f"0{the_time}"
+
     def set_time(self):
-        self.time_text.text = f"Time: {int(self.time)//(60*24)}.{(int(self.time)%(60*24))//60}:{(int(self.time)%(60*24))%60}"
+        self.time_text.text = \
+            f"Time: {int(self.get_day())}.{self.format_time(self.get_hour())}:{self.format_time(self.get_minute())}"
 
     def set_growth_speed(self):
         self.growth_speed = self.leaves
@@ -105,7 +120,6 @@ class GameWindow(pyglet.window.Window):
                 pyglet.clock.schedule_once(self.set_atp_white, .5)
 
 
-
 game = GameWindow(width=WIDTH, height=HEIGHT)
 
 
@@ -120,7 +134,7 @@ def update(dt):
 
     game.atp += game.growth_speed / UPS
     game.water += game.water_speed / UPS
-    game.time += game_speed / UPS
+    game.time += game.game_speed / UPS
 
 
 if __name__ == "__main__":
