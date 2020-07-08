@@ -10,7 +10,13 @@ UPS = 60
 chronometer = chrono.Chronometer()
 the_plant = plantus.Plant()
 res = depot.Resources()
-game = windo.GameWindow(timer=chronometer, plant=the_plant, plant_image=res.plant_img, width=WIDTH, height=HEIGHT)
+game = windo.GameWindow(
+    timer=chronometer,
+    plant=the_plant,
+    plant_image=res.plant_img,
+    width=WIDTH,
+    height=HEIGHT,
+)
 
 
 def update(dt):
@@ -30,5 +36,5 @@ def update(dt):
 
 
 if __name__ == "__main__":
-    pyglet.clock.schedule_interval(update, 1. / UPS)
+    pyglet.clock.schedule_interval(update, 1.0 / UPS)
     pyglet.app.run()

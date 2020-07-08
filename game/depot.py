@@ -3,7 +3,7 @@ import pyglet
 
 class Resources:
     def __init__(self):
-        pyglet.resource.path = ['graphics']
+        pyglet.resource.path = ["graphics"]
         pyglet.resource.reindex()
 
         self.plant_img = pyglet.resource.image("plant.png")
