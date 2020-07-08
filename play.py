@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import pyglet
 from game import chrono, plantus, windo, depot
 
